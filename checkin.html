@@ -1,0 +1,317 @@
+﻿<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HC Dochádzka – Check-in</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<style>
+  :root {
+    --ice-mid: #378ADD;
+    --ice-dark: #0C447C;
+    --rink: #042C53;
+    --accent: #EF9F27;
+    --accent-light: #FAEEDA;
+    --accent-dark: #633806;
+    --success: #3B6D11;
+    --success-light: #EAF3DE;
+    --danger: #E24B4A;
+    --bg: #ffffff;
+    --bg2: #f5f5f3;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --text: #1a1a18;
+    --text2: #5f5e5a;
+    --text3: #888780;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --bg2: #252523;
+      --border: rgba(255,255,255,0.12); --border2: rgba(255,255,255,0.22);
+      --text: #f0ede8; --text2: #b4b2a9; --text3: #888780;
+      --accent-light: #2e1f04; --success-light: #0d1f04;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg2);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .header {
+    background: var(--rink);
+    color: #fff;
+    padding: 18px 20px 16px;
+    text-align: center;
+  }
+  .header i { font-size: 28px; opacity: 0.9; display: block; margin-bottom: 6px; }
+  .header .title { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+  .header .sub { font-size: 13px; opacity: 0.6; margin-top: 3px; }
+  .content { max-width: 480px; margin: 0 auto; padding: 1.5rem 1rem 3rem; width: 100%; }
+  .step-card {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .step-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--ice-mid); color: #fff;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .step-title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .step-sub { font-size: 12px; color: var(--text2); margin-top: 1px; }
+  select {
+    width: 100%; padding: 11px 14px;
+    font-size: 15px; color: var(--text);
+    background: var(--bg); border: 0.5px solid var(--border2);
+    border-radius: var(--radius-md); outline: none;
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888780' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+    padding-right: 36px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  select:focus { border-color: var(--ice-mid); box-shadow: 0 0 0 3px rgba(55,138,221,0.15); }
+  .reward-hint {
+    margin-top: 9px; font-size: 14px; color: var(--text2);
+    min-height: 20px; display: flex; align-items: center; gap: 6px;
+  }
+  .reward-hint strong { color: var(--success); }
+  .btn-submit {
+    width: 100%; padding: 15px;
+    font-size: 16px; font-weight: 600;
+    background: var(--ice-mid); color: #fff;
+    border: none; border-radius: var(--radius-lg);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.15s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+  .btn-submit:hover { background: var(--ice-dark); }
+  .btn-submit:active { transform: scale(0.98); }
+  .btn-submit:disabled { background: var(--text3); cursor: not-allowed; }
+  .success-screen {
+    display: none; text-align: center; padding: 2rem 1rem;
+  }
+  .success-icon {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--success-light);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.25rem;
+  }
+  .success-icon i { font-size: 40px; color: var(--success); }
+  .success-big { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .success-detail { font-size: 15px; color: var(--text2); margin-bottom: 6px; }
+  .success-reward { font-size: 20px; font-weight: 700; color: var(--success); margin-bottom: 1.75rem; }
+  .btn-back {
+    padding: 12px 28px; font-size: 15px; font-weight: 600;
+    background: var(--bg); color: var(--text);
+    border: 0.5px solid var(--border2); border-radius: var(--radius-lg);
+    cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+    transition: background 0.15s;
+  }
+  .btn-back:hover { background: var(--bg2); }
+  .error-msg { font-size: 13px; color: var(--danger); margin-top: 8px; display: none; }
+  .loading { opacity: 0.6; pointer-events: none; }
+  footer { text-align: center; font-size: 11px; color: var(--text3); padding: 1rem; margin-top: auto; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <i class="ti ti-hockey-mask"></i>
+  <div class="title">HC Dochádzka</div>
+  <div class="sub">Zaregistruj svoj príchod</div>
+</div>
+
+<div class="content">
+  <div id="ci-form">
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Kto si?</div>
+          <div class="step-sub">Vyber svoje meno zo zoznamu</div>
+        </div>
+      </div>
+      <select id="ci-name">
+        <option value="">— vyber meno —</option>
+      </select>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Ktorý zápas?</div>
+          <div class="step-sub">Vyber dnešný zápas</div>
+        </div>
+      </div>
+      <select id="ci-game">
+        <option value="">— vyber zápas —</option>
+      </select>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Pozícia</div>
+          <div class="step-sub">Na akej pozícii pracuješ?</div>
+        </div>
+      </div>
+      <select id="ci-position" onchange="updateHint()">
+        <option value="">— vyber pozíciu —</option>
+      </select>
+      <div class="reward-hint" id="reward-hint"></div>
+    </div>
+
+    <div class="error-msg" id="err-msg">
+      <i class="ti ti-alert-circle"></i> Vyplň prosím všetky tri polia.
+    </div>
+
+    <button class="btn-submit" onclick="submitCheckin()" id="submit-btn">
+      <i class="ti ti-check"></i> Potvrdiť príchod
+    </button>
+  </div>
+
+  <div class="success-screen" id="ci-success">
+    <div class="success-icon"><i class="ti ti-circle-check"></i></div>
+    <div class="success-big">Príchod zaznamenaný!</div>
+    <div class="success-detail" id="suc-name"></div>
+    <div class="success-detail" id="suc-game"></div>
+    <div class="success-reward" id="suc-reward"></div>
+    <button class="btn-back" onclick="resetForm()">
+      <i class="ti ti-arrow-left"></i> Ďalší pracovník
+    </button>
+  </div>
+</div>
+
+<footer>HC Dochádzka · check-in systém</footer>
+
+<script>
+// ── Config – admin nastaví tieto hodnoty ──────────────────────────────
+// GAS_URL: vlož URL svojho Google Apps Script Web App
+// Ak je prázdna, dáta sa uložia len lokálne
+const GAS_URL = '';
+
+// Dáta sa načítajú zo spoločného localStorage (admin.html ich nastavuje)
+// Fallback: default hodnoty
+function loadConfig() {
+  try {
+    const raw = localStorage.getItem('hc_v2');
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return {
+    workers: [],
+    games: [],
+    positions: [],
+    attendance: [],
+    gsUrl: ''
+  };
+}
+
+function saveConfig(cfg) {
+  try { localStorage.setItem('hc_v2', JSON.stringify(cfg)); } catch(e) {}
+}
+
+let cfg = loadConfig();
+
+function populate() {
+  const nm = document.getElementById('ci-name');
+  const gm = document.getElementById('ci-game');
+  const ps = document.getElementById('ci-position');
+  nm.innerHTML = '<option value="">— vyber meno —</option>' +
+    cfg.workers.map(w => `<option>${esc(w)}</option>`).join('');
+  gm.innerHTML = '<option value="">— vyber zápas —</option>' +
+    cfg.games.map(g => `<option>${esc(g)}</option>`).join('');
+  ps.innerHTML = '<option value="">— vyber pozíciu —</option>' +
+    cfg.positions.map(p => `<option value="${esc(p.name)}" data-r="${p.reward}">${esc(p.name)} – ${p.reward} €</option>`).join('');
+}
+
+function updateHint() {
+  const sel = document.getElementById('ci-position');
+  const opt = sel.selectedOptions[0];
+  const hint = document.getElementById('reward-hint');
+  if (opt && opt.dataset.r) {
+    hint.innerHTML = `<i class="ti ti-coin-euro" style="font-size:16px;color:var(--accent);"></i> Odmena za túto pozíciu: <strong>${opt.dataset.r} €</strong>`;
+  } else {
+    hint.textContent = '';
+  }
+}
+
+async function submitCheckin() {
+  const name = document.getElementById('ci-name').value;
+  const game = document.getElementById('ci-game').value;
+  const pos  = document.getElementById('ci-position').value;
+  const err  = document.getElementById('err-msg');
+
+  if (!name || !game || !pos) {
+    err.style.display = 'flex';
+    return;
+  }
+  err.style.display = 'none';
+
+  const posObj = cfg.positions.find(p => p.name === pos);
+  const reward = posObj ? posObj.reward : 0;
+  const now = new Date();
+  const entry = {
+    datetime: now.toLocaleString('sk-SK'),
+    date: now.toLocaleDateString('sk-SK'),
+    month: `${now.getMonth()+1}/${now.getFullYear()}`,
+    name, game, position: pos, reward
+  };
+
+  // Ulož lokálne
+  cfg.attendance.push(entry);
+  saveConfig(cfg);
+
+  // Odošli na Google Sheets
+  const gsUrl = cfg.gsUrl || GAS_URL;
+  if (gsUrl) {
+    try {
+      fetch(gsUrl, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'checkin', ...entry })
+      });
+    } catch(e) {}
+  }
+
+  // Zobraz úspech
+  document.getElementById('ci-form').style.display = 'none';
+  document.getElementById('suc-name').textContent = name;
+  document.getElementById('suc-game').textContent = game + ' · ' + pos;
+  document.getElementById('suc-reward').textContent = 'Odmena: ' + reward + ' €';
+  document.getElementById('ci-success').style.display = 'block';
+}
+
+function resetForm() {
+  cfg = loadConfig(); // obnov prípadné zmeny z adminu
+  populate();
+  document.getElementById('ci-name').value = '';
+  document.getElementById('ci-game').value = '';
+  document.getElementById('ci-position').value = '';
+  document.getElementById('reward-hint').textContent = '';
+  document.getElementById('err-msg').style.display = 'none';
+  document.getElementById('ci-form').style.display = 'block';
+  document.getElementById('ci-success').style.display = 'none';
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+populate();
+</script>
+</body>
+</html>
+ENDOFFILE

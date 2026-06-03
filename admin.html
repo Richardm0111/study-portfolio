@@ -1,0 +1,346 @@
+﻿<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HC Dochádzka – Admin</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<style>
+  :root {
+    --ice-mid: #378ADD; --ice-dark: #0C447C; --ice: #E6F1FB;
+    --rink: #042C53;
+    --accent-light: #FAEEDA; --accent-dark: #633806;
+    --danger: #E24B4A; --danger-light: #FCEBEB;
+    --success: #3B6D11; --success-light: #EAF3DE;
+    --bg: #ffffff; --bg2: #f5f5f3; --bg3: #eeecea;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
+    --text: #1a1a18; --text2: #5f5e5a; --text3: #888780;
+    --radius-md: 8px; --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#1c1c1a; --bg2:#252523; --bg3:#2e2e2b;
+      --border:rgba(255,255,255,0.12); --border2:rgba(255,255,255,0.22);
+      --text:#f0ede8; --text2:#b4b2a9; --text3:#888780;
+      --ice:#0c2a42; --accent-light:#2e1f04; --danger-light:#2a0a0a; --success-light:#0d1f04;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg2); color: var(--text); min-height: 100vh; }
+  .top-bar { background: var(--rink); color: #fff; padding: 14px 20px; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 100; }
+  .top-bar .title { font-size: 17px; font-weight: 700; }
+  .top-bar .sub { font-size: 11px; opacity: 0.6; margin-top: 1px; }
+  .tabs-bar { background: var(--bg); border-bottom: 0.5px solid var(--border); display: flex; position: sticky; top: 57px; z-index: 99; }
+  .tab-btn { flex: 1; padding: 13px 8px; font-size: 13px; font-weight: 500; color: var(--text2); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; display: flex; align-items: center; justify-content: center; gap: 5px; transition: color 0.15s, border-color 0.15s; }
+  .tab-btn.active { color: var(--ice-mid); border-bottom-color: var(--ice-mid); }
+  .tab-btn:hover:not(.active) { color: var(--text); background: var(--bg2); }
+  .panel { display: none; max-width: 680px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+  .panel.active { display: block; }
+  .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 1rem; display: flex; align-items: center; gap: 7px; }
+  .card-title i { font-size: 16px; color: var(--ice-mid); }
+  label { font-size: 12px; font-weight: 500; color: var(--text2); display: block; margin-bottom: 5px; margin-top: 12px; }
+  label:first-child { margin-top: 0; }
+  select, input[type=text], input[type=number], input[type=url] { width: 100%; padding: 9px 12px; font-size: 14px; color: var(--text); background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-md); outline: none; transition: border-color 0.15s, box-shadow 0.15s; appearance: none; -webkit-appearance: none; }
+  select:focus, input:focus { border-color: var(--ice-mid); box-shadow: 0 0 0 3px rgba(55,138,221,0.15); }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888780' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; font-size: 13px; font-weight: 500; border-radius: var(--radius-md); cursor: pointer; border: 0.5px solid var(--border2); background: var(--bg); color: var(--text); transition: all 0.15s; }
+  .btn:hover { background: var(--bg2); }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--ice-mid); color: #fff; border-color: var(--ice-mid); }
+  .btn-primary:hover { background: var(--ice-dark); border-color: var(--ice-dark); }
+  .btn-danger { color: var(--danger); border-color: var(--danger); background: none; }
+  .btn-danger:hover { background: var(--danger-light); }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  @media(max-width:480px) { .grid2,.grid3 { grid-template-columns: 1fr 1fr; } }
+  .metric { background: var(--bg2); border-radius: var(--radius-md); padding: 1rem; }
+  .metric-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .metric-val { font-size: 24px; font-weight: 700; color: var(--text); }
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+  .badge-blue { background: var(--ice); color: var(--ice-dark); }
+  .badge-amber { background: var(--accent-light); color: var(--accent-dark); }
+  .badge-green { background: var(--success-light); color: var(--success); }
+  .row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 0.5px solid var(--border); gap: 8px; }
+  .row:last-child { border-bottom: none; padding-bottom: 0; }
+  .row:first-child { padding-top: 0; }
+  .pill-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .pill { display: inline-flex; align-items: center; gap: 4px; background: var(--bg2); border: 0.5px solid var(--border); border-radius: 20px; padding: 4px 10px; font-size: 12px; color: var(--text2); }
+  .pill button { background: none; border: none; cursor: pointer; color: var(--danger); font-size: 15px; line-height: 1; padding: 0; margin-left: 2px; }
+  .notice { border-radius: var(--radius-md); padding: 12px 14px; font-size: 13px; margin-bottom: 1rem; display: flex; gap: 8px; align-items: flex-start; }
+  .notice-blue { background: var(--ice); color: var(--ice-dark); }
+  .notice-amber { background: var(--accent-light); color: var(--accent-dark); }
+  .flex-row { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
+  .flex-row > * { flex: 1; min-width: 100px; }
+  .month-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .month-bar select { width: auto; flex: 1; min-width: 140px; }
+  .sum-row { display: grid; grid-template-columns: 1.8fr 0.6fr 0.8fr; gap: 6px; padding: 8px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; align-items: center; }
+  .sum-row:last-child { border-bottom: none; }
+  .code-block { background: var(--bg2); border-radius: var(--radius-md); padding: 12px; font-family: 'SF Mono','Fira Mono',monospace; font-size: 11px; color: var(--text); overflow-x: auto; max-height: 220px; overflow-y: auto; white-space: pre; border: 0.5px solid var(--border); }
+  .qr-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 0.5rem 0; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <i class="ti ti-shield-lock" style="font-size:20px; opacity:0.9;"></i>
+  <div>
+    <div class="title">HC Dochádzka – Admin</div>
+    <div class="sub">Správa pracovníkov, zápasov a prehľad odmien</div>
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('admin')"><i class="ti ti-settings"></i> Nastavenia</button>
+  <button class="tab-btn" onclick="switchTab('report')"><i class="ti ti-chart-bar"></i> Prehľad</button>
+  <button class="tab-btn" onclick="switchTab('setup')"><i class="ti ti-plug"></i> Sheets & QR</button>
+</div>
+
+<!-- ADMIN -->
+<div class="panel active" id="panel-admin">
+  <div class="grid3" style="margin-bottom:1rem;">
+    <div class="metric"><div class="metric-label">Pracovníci</div><div class="metric-val" id="st-workers">0</div></div>
+    <div class="metric"><div class="metric-label">Zápasy</div><div class="metric-val" id="st-games">0</div></div>
+    <div class="metric"><div class="metric-label">Záznamy</div><div class="metric-val" id="st-recs">0</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-users"></i> Pracovníci</div>
+    <div class="flex-row">
+      <input type="text" id="nw-name" placeholder="Meno Priezvisko" style="flex:2;">
+      <button class="btn btn-primary" onclick="addWorker()" style="flex:0 0 auto;"><i class="ti ti-plus"></i> Pridať</button>
+    </div>
+    <div class="pill-wrap" id="workers-list"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-calendar"></i> Zápasy</div>
+    <div class="flex-row">
+      <div style="flex:1.2; min-width:80px;"><label>Dátum</label><input type="text" id="ng-date" placeholder="6.12." style="width:100%;"></div>
+      <div style="flex:1; min-width:90px;"><label>Typ</label>
+        <select id="ng-type" style="width:100%;">
+          <option>SŽ</option><option>MŽ</option><option>D</option><option>J</option><option>HP 5</option>
+        </select>
+      </div>
+      <div style="flex:0 0 auto; align-self:flex-end;"><button class="btn btn-primary" onclick="addGame()"><i class="ti ti-plus"></i> Pridať</button></div>
+    </div>
+    <div id="games-list" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-award"></i> Pozície a odmeny</div>
+    <div class="flex-row">
+      <input type="text" id="np-name" placeholder="Názov pozície" style="flex:2; min-width:110px;">
+      <input type="number" id="np-reward" placeholder="€" style="flex:0.6; min-width:60px; max-width:80px;">
+      <button class="btn btn-primary" onclick="addPosition()" style="flex:0 0 auto;"><i class="ti ti-plus"></i></button>
+    </div>
+    <div id="positions-list" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-list"></i> Posledné záznamy</div>
+    <div id="admin-log"></div>
+  </div>
+</div>
+
+<!-- REPORT -->
+<div class="panel" id="panel-report">
+  <div class="month-bar">
+    <select id="rep-month" onchange="renderReport()" style="max-width:180px;"></select>
+    <button class="btn btn-sm" onclick="exportCSV()"><i class="ti ti-download"></i> CSV</button>
+    <button class="btn btn-sm" onclick="window.print()"><i class="ti ti-printer"></i> Tlač</button>
+  </div>
+  <div class="grid3" style="margin-bottom:1rem;">
+    <div class="metric"><div class="metric-label">Celkom odmeny</div><div class="metric-val" id="rep-total">0 €</div></div>
+    <div class="metric"><div class="metric-label">Záznamy</div><div class="metric-val" id="rep-count">0</div></div>
+    <div class="metric"><div class="metric-label">Pracovníci</div><div class="metric-val" id="rep-workers">0</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-user-dollar"></i> Súhrn odmien</div>
+    <div style="display:grid; grid-template-columns:1.8fr 0.6fr 0.8fr; gap:6px; margin-bottom:6px; padding-bottom:6px; border-bottom:0.5px solid var(--border);">
+      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;">Meno</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;">Zápasy</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;">Odmena</div>
+    </div>
+    <div id="rep-summary"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-table"></i> Detail dochádzky</div>
+    <div id="rep-detail"></div>
+  </div>
+</div>
+
+<!-- SETUP -->
+<div class="panel" id="panel-setup">
+  <div class="notice notice-amber">
+    <i class="ti ti-lock"></i>
+    <div>Táto stránka je len pre teba (admina). Zamestnanci používajú <strong>checkin.html</strong> — tá neobsahuje žiadne admin funkcie.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-brand-google"></i> Google Sheets – prepojenie</div>
+    <label>Web App URL (Google Apps Script)</label>
+    <input type="url" id="gs-url" placeholder="https://script.google.com/macros/s/.../exec">
+    <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="saveGsUrl()"><i class="ti ti-plug"></i> Uložiť</button>
+      <button class="btn" onclick="testConn()"><i class="ti ti-wifi"></i> Otestovať</button>
+    </div>
+    <div id="gs-result" style="margin-top:10px; font-size:13px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-qrcode"></i> QR kód pre check-in</div>
+    <div style="font-size:13px; color:var(--text2); margin-bottom:10px;">Zadaj URL stránky <strong>checkin.html</strong> po nahraní na GitHub Pages.</div>
+    <input type="url" id="qr-input" placeholder="https://tvoje-meno.github.io/hc-dochadzka/checkin.html">
+    <div style="display:flex; gap:8px; margin-top:10px;">
+      <button class="btn btn-primary" onclick="genQR()"><i class="ti ti-qrcode"></i> Vygenerovať QR</button>
+    </div>
+    <div class="qr-wrap" id="qr-out" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="ti ti-file-code"></i> Google Apps Script kód</div>
+    <div style="font-size:13px; color:var(--text2); margin-bottom:10px;">Skopíruj do script.google.com → nasaď ako Web App (prístup: Ktokoľvek).</div>
+    <div class="code-block" id="gas-code"></div>
+    <button class="btn" style="margin-top:8px;" onclick="copyGas()"><i class="ti ti-copy"></i> Kopírovať kód</button>
+  </div>
+
+  <div class="card" style="border-color:var(--danger);">
+    <div class="card-title" style="color:var(--danger);"><i class="ti ti-trash"></i> Nebezpečná zóna</div>
+    <div style="font-size:13px; color:var(--text2); margin-bottom:10px;">Vymaže všetky lokálne dáta.</div>
+    <button class="btn btn-danger" onclick="resetAll()"><i class="ti ti-trash"></i> Vymazať dáta</button>
+  </div>
+</div>
+
+<script>
+const GAS_CODE = `function doPost(e) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var data = JSON.parse(e.postData.contents);
+    if (data.action === 'checkin') {
+      var sheet = getSheet('Dochádzka');
+      if (sheet.getLastRow() === 0) {
+        sheet.appendRow(['Dátum a čas','Meno','Zápas','Pozícia','Odmena (€)','Mesiac']);
+        sheet.getRange(1,1,1,6).setFontWeight('bold')
+          .setBackground('#042C53').setFontColor('#ffffff');
+      }
+      var now = new Date();
+      var mesiac = Utilities.formatDate(now,'Europe/Bratislava','MM/yyyy');
+      sheet.appendRow([
+        Utilities.formatDate(now,'Europe/Bratislava','dd.MM.yyyy HH:mm'),
+        data.name, data.game, data.position, Number(data.reward), mesiac
+      ]);
+      var last = sheet.getLastRow();
+      sheet.getRange(last,1,1,6)
+        .setBackground(last % 2 === 0 ? '#f0f4fa' : '#ffffff');
+      return json({ok:true});
+    }
+    if (data.action === 'ping') return json({ok:true, msg:'OK'});
+    return json({ok:false});
+  } catch(err) { return json({ok:false, msg:err.toString()}); }
+}
+function doGet(e) { return json({ok:true, msg:'HC Dochádzka API'}); }
+function getSheet(n) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  return ss.getSheetByName(n) || ss.insertSheet(n);
+}
+function json(o) {
+  return ContentService.createTextOutput(JSON.stringify(o))
+    .setMimeType(ContentService.MimeType.JSON);
+}`;
+
+let S = loadState();
+function loadState() {
+  try { const r = localStorage.getItem('hc_v2'); if(r) return JSON.parse(r); } catch(e){}
+  return {
+    workers:['Dušan Gašparík','Jarmila Sedláková','Lea Harmadyová','Marianna Štefaničeková'],
+    games:['6.12. D','7.12. D','13.12. SŽ','13.12. MŽ','20.12. SŽ','20.12. MŽ','20.12. J','21.12. J'],
+    positions:[
+      {name:'Hlavný usp.',reward:20},{name:'Zdravotník',reward:20},
+      {name:'Štatistik',reward:15},{name:'Časomerač',reward:15},
+      {name:'Hlásateľ',reward:15},{name:'Trestomerač D',reward:15},{name:'Trestomerač H',reward:15}
+    ],
+    attendance:[], gsUrl:''
+  };
+}
+function save(){ try{localStorage.setItem('hc_v2',JSON.stringify(S));}catch(e){} }
+
+const TABS=['admin','report','setup'];
+function switchTab(t){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',TABS[i]===t));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+t));
+  if(t==='report') renderReport();
+  if(t==='setup'){ document.getElementById('gas-code').textContent=GAS_CODE; document.getElementById('gs-url').value=S.gsUrl||''; }
+}
+
+function renderAdmin(){
+  document.getElementById('st-workers').textContent=S.workers.length;
+  document.getElementById('st-games').textContent=S.games.length;
+  document.getElementById('st-recs').textContent=S.attendance.length;
+  document.getElementById('workers-list').innerHTML=S.workers.map((w,i)=>`<span class="pill">${esc(w)}<button onclick="removeWorker(${i})">×</button></span>`).join('');
+  const gl=document.getElementById('games-list');
+  gl.innerHTML=S.games.length?S.games.map((g,i)=>`<div class="row"><span class="badge badge-blue">${esc(g)}</span><button class="btn btn-sm btn-danger" onclick="removeGame(${i})"><i class="ti ti-x"></i></button></div>`).join(''):'<p style="font-size:13px;color:var(--text3);">Žiadne zápasy.</p>';
+  const pl=document.getElementById('positions-list');
+  pl.innerHTML=S.positions.map((p,i)=>`<div class="row"><span style="font-size:13px;">${esc(p.name)}</span><div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-amber">${p.reward} €</span><button class="btn btn-sm btn-danger" onclick="removePosition(${i})"><i class="ti ti-x"></i></button></div></div>`).join('');
+  const log=document.getElementById('admin-log');
+  const recent=[...S.attendance].reverse().slice(0,10);
+  log.innerHTML=recent.length?recent.map(r=>`<div class="row"><div><div style="font-size:13px;font-weight:500;">${esc(r.name)}</div><div style="font-size:11px;color:var(--text3);">${esc(r.game)} · ${esc(r.position)} · ${r.date}</div></div><span class="badge badge-green">${r.reward} €</span></div>`).join(''):'<p style="font-size:13px;color:var(--text3);">Zatiaľ žiadne záznamy.</p>';
+}
+function addWorker(){ const v=document.getElementById('nw-name').value.trim(); if(!v)return; S.workers.push(v); document.getElementById('nw-name').value=''; save();renderAdmin(); }
+function removeWorker(i){ S.workers.splice(i,1); save();renderAdmin(); }
+function addGame(){ const d=document.getElementById('ng-date').value.trim(); const t=document.getElementById('ng-type').value; if(!d)return; S.games.push(`${d} ${t}`); document.getElementById('ng-date').value=''; save();renderAdmin(); }
+function removeGame(i){ S.games.splice(i,1); save();renderAdmin(); }
+function addPosition(){ const n=document.getElementById('np-name').value.trim(); const r=parseInt(document.getElementById('np-reward').value); if(!n||isNaN(r))return; S.positions.push({name:n,reward:r}); document.getElementById('np-name').value=''; document.getElementById('np-reward').value=''; save();renderAdmin(); }
+function removePosition(i){ S.positions.splice(i,1); save();renderAdmin(); }
+
+function renderReport(){
+  const sel=document.getElementById('rep-month');
+  const months=[...new Set(S.attendance.map(a=>a.month))];
+  const now=new Date(); const curr=`${now.getMonth()+1}/${now.getFullYear()}`;
+  if(!months.includes(curr)) months.push(curr);
+  months.sort((a,b)=>{ const[am,ay]=a.split('/').map(Number),[bm,by]=b.split('/').map(Number); return ay!==by?ay-by:am-bm; });
+  const chosen=sel.value||curr;
+  sel.innerHTML=months.map(m=>`<option value="${m}" ${m===chosen?'selected':''}>${fmtM(m)}</option>`).join('');
+  const filt=S.attendance.filter(a=>a.month===chosen);
+  const total=filt.reduce((s,a)=>s+a.reward,0);
+  const byW={};
+  filt.forEach(a=>{ if(!byW[a.name]) byW[a.name]={c:0,r:0}; byW[a.name].c++; byW[a.name].r+=a.reward; });
+  document.getElementById('rep-total').textContent=total+' €';
+  document.getElementById('rep-count').textContent=filt.length;
+  document.getElementById('rep-workers').textContent=Object.keys(byW).length;
+  const sorted=Object.entries(byW).sort((a,b)=>b[1].r-a[1].r);
+  document.getElementById('rep-summary').innerHTML=sorted.length?sorted.map(([n,v])=>`<div class="sum-row"><div style="font-weight:500;">${esc(n)}</div><div style="color:var(--text3);">${v.c}×</div><div><span class="badge badge-amber">${v.r} €</span></div></div>`).join(''):'<p style="font-size:13px;color:var(--text3);">Žiadne záznamy.</p>';
+  document.getElementById('rep-detail').innerHTML=filt.length?filt.map(a=>`<div class="row"><div><div style="font-size:13px;font-weight:500;">${esc(a.name)}</div><div style="font-size:11px;color:var(--text3);">${esc(a.game)} · ${esc(a.position)} · ${a.date}</div></div><span class="badge badge-green">${a.reward} €</span></div>`).join(''):'<p style="font-size:13px;color:var(--text3);">Žiadne záznamy.</p>';
+}
+function fmtM(m){ const[mn,y]=m.split('/'); return ['Jan','Feb','Mar','Apr','Máj','Jún','Júl','Aug','Sep','Okt','Nov','Dec'][+mn-1]+' '+y; }
+function exportCSV(){
+  const chosen=document.getElementById('rep-month').value;
+  const filt=S.attendance.filter(a=>a.month===chosen);
+  const rows=[['Dátum a čas','Meno','Zápas','Pozícia','Odmena (€)'],...filt.map(a=>[a.datetime,a.name,a.game,a.position,a.reward])];
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(';')).join('\r\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`dochadzka_${chosen.replace('/','_')}.csv`; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function saveGsUrl(){ S.gsUrl=document.getElementById('gs-url').value.trim(); save(); document.getElementById('gs-result').style.color='var(--success)'; document.getElementById('gs-result').textContent='✓ URL uložená.'; }
+async function testConn(){
+  if(!S.gsUrl){ document.getElementById('gs-result').textContent='Zadaj URL.'; return; }
+  document.getElementById('gs-result').textContent='Testujem…';
+  try{
+    await fetch(S.gsUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'ping'})});
+    document.getElementById('gs-result').style.color='var(--success)'; document.getElementById('gs-result').textContent='✓ Požiadavka odoslaná úspešne.';
+  }catch(e){ document.getElementById('gs-result').style.color='var(--danger)'; document.getElementById('gs-result').textContent='✗ Chyba: '+e.message; }
+}
+function genQR(){ const url=document.getElementById('qr-input').value.trim(); if(!url){alert('Zadaj URL.');return;} const q=`https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=10&data=${encodeURIComponent(url)}`; document.getElementById('qr-out').innerHTML=`<img src="${q}" alt="QR kód" style="border-radius:8px;border:0.5px solid var(--border);"><div style="font-size:12px;color:var(--text3);">Pravý klik → Uložiť obrázok</div><a href="${q}" download="qr_checkin.png" class="btn" style="font-size:12px;"><i class="ti ti-download"></i> Stiahnuť QR</a>`; }
+function copyGas(){ navigator.clipboard.writeText(GAS_CODE).then(()=>alert('✓ Kód skopírovaný!')).catch(()=>{}); }
+function resetAll(){ if(!confirm('Naozaj vymazať všetky lokálne dáta?'))return; localStorage.removeItem('hc_v2'); S={workers:[],games:[],positions:[],attendance:[],gsUrl:''}; save();renderAdmin();alert('Dáta vymazané.'); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+renderAdmin();
+document.getElementById('rep-month').innerHTML=`<option value="${new Date().getMonth()+1}/${new Date().getFullYear()}">${fmtM((new Date().getMonth()+1)+'/'+new Date().getFullYear())}</option>`;
+</script>
+</body>
+</html>
