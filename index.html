@@ -1,0 +1,835 @@
+﻿<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Richard Melaga — Študijné portfólio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0f;
+    --surface: #161618;
+    --surface2: #1e1e21;
+    --border: #2a2a2e;
+    --accent: #c8f542;
+    --accent2: #42a5f5;
+    --text: #e8e8ec;
+    --muted: #7a7a85;
+    --radius: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(14,14,15,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 400;
+    transition: color 0.2s;
+    letter-spacing: 0.03em;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 7rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(200,245,66,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(66,165,245,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    max-width: 900px;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(200,245,66,0.08);
+    border: 1px solid rgba(200,245,66,0.2);
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.35rem 0.9rem;
+    border-radius: 100px;
+    margin-bottom: 1.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero-name span { color: var(--accent); }
+
+  .hero-desc {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-desc strong { color: var(--text); font-weight: 400; }
+
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 0.45rem 1rem;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 6rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 3rem;
+  }
+
+  /* SKILLS GRID */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.8rem;
+    transition: border-color 0.25s, transform 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .skill-card:hover {
+    border-color: rgba(200,245,66,0.25);
+    transform: translateY(-3px);
+  }
+  .skill-card:hover::before { opacity: 1; }
+
+  .skill-card.blue::before { background: linear-gradient(90deg, var(--accent2), transparent); }
+  .skill-card.blue:hover { border-color: rgba(66,165,245,0.25); }
+
+  .skill-card.mixed::before { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .skill-card.mixed:hover { border-color: rgba(200,245,66,0.2); }
+
+  .skill-icon {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .skill-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .skill-card p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .skill-level {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 0.73rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+    border-radius: 100px;
+    background: rgba(200,245,66,0.08);
+    color: var(--accent);
+    border: 1px solid rgba(200,245,66,0.15);
+  }
+
+  .skill-level.blue-level {
+    background: rgba(66,165,245,0.08);
+    color: var(--accent2);
+    border-color: rgba(66,165,245,0.15);
+  }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .project-card:hover {
+    border-color: rgba(200,245,66,0.2);
+    transform: translateY(-3px);
+  }
+
+  .project-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+  }
+
+  .project-tag.green {
+    background: rgba(200,245,66,0.08);
+    color: var(--accent);
+    border: 1px solid rgba(200,245,66,0.15);
+  }
+
+  .project-tag.blue {
+    background: rgba(66,165,245,0.08);
+    color: var(--accent2);
+    border: 1px solid rgba(66,165,245,0.15);
+  }
+
+  .project-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.02em;
+  }
+
+  .project-card p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
+  .project-meta {
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .project-meta span::before {
+    content: attr(data-label) ': ';
+    color: var(--text);
+    opacity: 0.5;
+  }
+
+  /* COURSES */
+  .semester-block {
+    margin-bottom: 3rem;
+  }
+
+  .semester-label {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .semester-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .courses-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .course-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    transition: border-color 0.2s;
+  }
+
+  .course-item:hover { border-color: var(--border); }
+
+  .course-code {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    background: rgba(200,245,66,0.07);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-top: 0.15rem;
+    font-family: 'DM Sans', monospace;
+  }
+
+  .course-code.fi { color: var(--accent2); background: rgba(66,165,245,0.07); }
+  .course-info { flex: 1; }
+
+  .course-name {
+    font-size: 0.88rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+  }
+
+  .course-desc {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* FOOTER */
+  footer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .footer-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--accent); }
+
+  .footer-copy {
+    color: var(--muted);
+    font-size: 0.8rem;
+    width: 100%;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* CONTACT STRIP */
+  .contact-strip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-strip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(200,245,66,0.04), transparent);
+    pointer-events: none;
+  }
+
+  .contact-strip h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.3rem;
+  }
+
+  .contact-strip p { color: var(--muted); font-size: 0.9rem; }
+
+  .contact-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.4rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0e0e0f;
+  }
+
+  .btn-primary:hover {
+    background: #d4f95a;
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    border: 1px solid var(--border);
+    color: var(--text);
+    background: transparent;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 700px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero, section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    footer { padding: 2rem 1.5rem; }
+    .contact-strip { padding: 1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">RM</div>
+  <ul class="nav-links">
+    <li><a href="#o-mne">O mne</a></li>
+    <li><a href="#zrucnosti">Zručnosti</a></li>
+    <li><a href="#projekty">Projekty</a></li>
+    <li><a href="#predmety">Predmety</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="o-mne">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Študijné portfólio · 2025-súčasnosť</div>
+    <h1 class="hero-name">Richard<br><span>Melaga</span></h1>
+    <p class="hero-desc">
+      Študent odboru <strong>Podniková informatika</strong> na Masarykovej univerzite v Brne.
+      Zaujímam sa o prepojenie biznisu a technológií — od <strong>ERP systémov</strong> a podnikových
+      informačných systémov až po programovanie a základy IT infraštruktúry.
+    </p>
+    <div class="hero-badges">
+      <span class="badge">📍 Brno, Masarykova univerzita</span>
+      <span class="badge">🎓 Bc. Podniková informatika (ESF + FI)</span>
+      <span class="badge">📅 1. ročník dokončený</span>
+    </div>
+  </div>
+</div>
+
+<!-- ZRUČNOSTI -->
+<section id="zrucnosti">
+  <div class="section-label fade-up">Čo viem</div>
+  <h2 class="section-title fade-up">Zručnosti &amp; nástroje</h2>
+
+  <div class="skills-grid">
+    <div class="skill-card blue fade-up">
+      <div class="skill-icon">📦</div>
+      <h3>Microsoft Dynamics 365 Business Central</h3>
+      <p>Praktická práca s ERP systémom v rámci predmetu Podnikové informačné systémy — základné procesy, navigácia a práca s dátami.</p>
+      <span class="skill-level blue-level">Rozvíjajúce sa</span>
+    </div>
+    
+    <div class="skill-card fade-up">
+      <div class="skill-icon">🐍</div>
+      <h3>Python</h3>
+      <p>Programovanie, algoritmy, dátové štruktúry. Absolvoval som dva semestre kurzu vývoja v Pythone na Fakulte informatiky.</p>
+      <span class="skill-level">Stredne pokročilý</span>
+    </div>
+
+    <div class="skill-card blue fade-up">
+      <div class="skill-icon">⚙</div>
+      <h3>Operačný manažment &amp; optimalizácia procesov</h3>
+      <p>Teoretické a praktické základy riadenia procesov. Identifikácia úzkych miest pomocou Teórie obmedzení (TOC), plánovanie toku (DBR, Littlov zákon) a optimalizácia zásob (EOQ). Využitie analytických metód Kepner-Tregoe a projektového riadenia CCPM.</p>
+      <span class="skill-level blue-level">Rozvíjajúce sa</span>
+    </div>
+
+    <div class="skill-card blue fade-up">
+      <div class="skill-icon">📊</div>
+      <h3>Finančné účtovníctvo</h3>
+      <p>Základy podvojného účtovníctva, účtovanie hospodárskych transakcií, orientácia v účtovných výkazoch.</p>
+      <span class="skill-level blue-level">Základy</span>
+    </div>
+
+    <div class="skill-card mixed fade-up">
+      <div class="skill-icon">🔗</div>
+      <h3>IT a biznis — prepojenie</h3>
+      <p>Schopnosť uvažovať o IT riešeniach v kontexte podnikových procesov. Základy podnikovej ekonomiky a manažmentu.</p>
+      <span class="skill-level">Rozvíjajúce sa</span>
+    </div>
+
+    <div class="skill-card fade-up">
+      <div class="skill-icon">✍️</div>
+      <h3>Odborná komunikácia</h3>
+      <p>Akademické písanie odborných textov, argumentácia, práca so zdrojmi. Odborná angličtina B2.</p>
+      <span class="skill-level">Základy–mierne pokročilý</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PROJEKTY -->
+<section id="projekty">
+  <div class="section-label fade-up">Čo som robil</div>
+  <h2 class="section-title fade-up">Projekty &amp; praktické práce</h2>
+
+  <div class="projects-grid">
+    <div class="project-card fade-up">
+      <span class="project-tag blue">ERP · Podnikové IS</span>
+      <h3>Práca s Microsoft Dynamics 365 Business Central</h3>
+      <p>Praktické cvičenia a úlohy v reálnom ERP prostredí v rámci predmetu Podnikové informačné systémy 1. Pochopenie kľúčových modulov a podnikových procesov riadených ERP systémom.</p>
+      <div class="project-meta">
+        <span data-label="Predmet">BPH_PIS1</span>
+        <span data-label="Nástroj">MS Dynamics 365 BC</span>
+      </div>
+    </div>
+
+    <div class="project-card fade-up">
+      <span class="project-tag green">Programovanie · Python</span>
+      <h3>Programovacie úlohy v Pythone</h3>
+      <p>Riešenie algoritmických úloh, implementácia dátových štruktúr a práca s programovacími konceptmi počas dvoch semestrov kurzu programovania na Fakulte informatiky MUNI.</p>
+      <div class="project-meta">
+        <span data-label="Predmety">IB113, IB114</span>
+        <span data-label="Jazyk">Python</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PREDMETY -->
+<section id="predmety">
+  <div class="section-label fade-up">Absolvované</div>
+  <h2 class="section-title fade-up">Predmety</h2>
+
+  <div class="semester-block fade-up">
+    <div class="semester-label">1. semester · Jeseň 2025</div>
+    <div class="courses-list">
+      <div class="course-item">
+        <span class="course-code">IB000ext</span>
+        <div class="course-info">
+          <div class="course-name">Matematické základy informatiky</div>
+          <div class="course-desc">Logika, množiny, formálny základ pre IT</div>
+        </div>
+      </div>
+      <div class="course-item">
+        <span class="course-code">IB113</span>
+        <div class="course-info">
+          <div class="course-name">Úvod do programovania a algoritmizácie</div>
+          <div class="course-desc">Python, algoritmické myslenie</div>
+        </div>
+      </div>
+      <div class="course-item">
+        <span class="course-code">PB001</span>
+        <div class="course-info">
+          <div class="course-name">Úvod do informačných technológií</div>
+          <div class="course-desc">Základy IT systémov a infraštruktúry</div>
+        </div>
+      </div>
+      <div class="course-item">
+        <span class="course-code fi">BPH_USPI</span>
+        <div class="course-info">
+          <div class="course-name">Úvod do štúdia podnikovej informatiky</div>
+          <div class="course-desc">Disciplína POIN, kritické myslenie</div>
+        </div>
+      </div>
+      <div class="course-item">
+        <span class="course-code fi">BPF_FIU1</span>
+        <div class="course-info">
+          <div class="course-name">Finančné účtovníctvo 1</div>
+          <div class="course-desc">Základy účtovníctva, hospodárske transakcie</div>
+        </div>
+      </div>
+      <div class="course-item">
+        <span class="course-code fi">BDX_AKAP</span>
+        <div class="course-info">
+          <div class="course-name">Akademické písanie</div>
+          <div class="course-desc">Odborné texty, práca so zdrojmi</div>
+        </div>
+      </div>
+      <div class="course-item">
+        <span class="course-code fi">BPJ_JI1A</span>
+        <div class="course-info">
+          <div class="course-name">Angličtina 1</div>
+          <div class="course-desc">Odborná angličtina</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="semester-block fade-up">
+    <div class="semester-label">2. semester · Jar 2026</div>
+    <div class="courses-list">
+      <div class="course-item">
+        <span class="course-code">IB110</span>
+        <div class="course-info">
+          <div class="course-name">Základy informatiky</div>
+          <div class="course-desc">Teória, algoritmy, výpočtová zložitosť</div>
+        </div>
+      </div>
+      <div class="course-item">
+        <span class="course-code">IB114</span>
+        <div class="course-info">
+          <div class="course-name">Úvod do programovania a algoritmizácie II</div>
+          <div class="course-desc">Python pokračovanie, dátové štruktúry</div>
+        </div>
+      </div>
+      <div class="course-item">
+        <span class="course-code">PB153</span>
+        <div class="course-info">
+          <div class="course-name">Operačné systémy a ich rozhrania</div>
+          <div class="course-desc">OS, shell, systémové rozhrania</div>
+        </div>
+      </div>
+      <div class="course-item">
+        <span class="course-code fi">BPH_PIS1</span>
+        <div class="course-info">
+          <div class="course-name">Podnikové informačné systémy 1</div>
+          <div class="course-desc">ERP systémy, MS Dynamics 365 BC</div>
+        </div>
+      </div>
+      <div class="course-item">
+        <span class="course-code fi">BPH_UPEM</span>
+        <div class="course-info">
+          <div class="course-name">Úvod do podnikovej ekonomiky a manažmentu</div>
+          <div class="course-desc">Ekonomika podniku, manažment</div>
+        </div>
+      </div>
+      <div class="course-item">
+        <span class="course-code fi">BPJ_JI2A</span>
+        <div class="course-info">
+          <div class="course-name">Angličtina 2</div>
+          <div class="course-desc">Odborná angličtina, pokračovanie</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- KONTAKT -->
+<section id="kontakt">
+  <div class="contact-strip fade-up">
+    <div>
+      <h3>Chceš sa spojiť?</h3>
+      <p>Nájdeš ma na LinkedIn alebo mi napíš na mail.</p>
+    </div>
+    <div class="contact-links">
+      <a href="https://www.linkedin.com/in/richard-melaga-068301399/" class="btn btn-primary" target="_blank">
+        LinkedIn ↗
+      </a>
+      <a href="mailto:richardmelaga@gmail.com" class="btn btn-outline">
+        richardmelaga@gmail.com
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-name">Richard Melaga</div>
+  <div class="footer-links">
+    <a href="#o-mne">O mne</a>
+    <a href="#zrucnosti">Zručnosti</a>
+    <a href="#projekty">Projekty</a>
+    <a href="#predmety">Predmety</a>
+  </div>
+  <p class="footer-copy">© 2025 · Študijné portfólio · Podniková informatika, MUNI Brno</p>
+</footer>
+
+<script>
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
